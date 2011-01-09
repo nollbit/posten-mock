@@ -6,8 +6,19 @@
 		<!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->		
 
 		<link rel="stylesheet" href="/static/css/posten.css" type="text/css" media="screen, projection"> 
+		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 		<script src="/static/js/posten.js"></script>
 	</head>
 	<body>
+		<div id="container">
+			<h1>Parcels</h1>
+			<ul id="parcels">
+			</div>
+		</div>
 	</body>
+	
+	<script id="parcelListItemTemplate" type="text/x-jquery-tmpl"> 
+	    <li><a href="/parcels/${id}" class="tracking-number">${tracking_number}</a></li>
+	</script>
 </html>

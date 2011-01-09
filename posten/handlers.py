@@ -18,6 +18,7 @@ class ParcelHandler(webapp.RequestHandler):
     def bad_request(self, message = None):
         self.response.set_status(400)
         if message is not None:
+            self.response.headers["Content-Type"] =  "text/plain; charset=UTF-8"
             self.response.out.write(message)
 
     def not_found(self):
@@ -26,10 +27,14 @@ class ParcelHandler(webapp.RequestHandler):
     def get(self, parcelId, parcelEventId):
         response_dict = None
         if parcelId is None:
+            # show all parcels, sans events
             pq = Parcel.all()
             parcels = pq.fetch(100)
             response_dict = [p.to_dict() for p in parcels]
         else:
+            # show single parcel, with events
+            # unless event id set,
+            # in that case, just return the event
             parcel = Parcel.get_by_id(int(parcelId))
             if parcel is None:
                 return self.not_found()
@@ -53,6 +58,6 @@ class ParcelHandler(webapp.RequestHandler):
         
 class FixtureHandler(webapp.RequestHandler):
     def get(self):
-        f = FixtureHelper()
-        f.load()
+        # just add a single parcel with events
+        FixtureHelper().load()
         self.response.out.write("done")
