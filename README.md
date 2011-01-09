@@ -16,8 +16,13 @@ How?
 This is a small web service that uses the [webapp framework][webapp]. It uses WSGI and you can
 run it as is on [Google App Engine][gae].
 
+It uses [Blueprint][blueprint] and [JQuery][jquery].
+
 [webapp]: http://code.google.com/appengine/docs/python/tools/webapp/
 [gae]: http://code.google.com/appengine/
+
+[blueprint]: http://www.blueprintcss.org/
+[jquery]: http://jquery.com/
 
 License?
 ========
