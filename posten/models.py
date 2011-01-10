@@ -51,7 +51,7 @@ class Parcel(PostenModel):
     actual_weight = db.StringProperty()
 
 class ParcelEvent(PostenModel):
-    error = db.BooleanProperty()
+    error = db.BooleanProperty(default=False)
     date = db.DateTimeProperty()
     location = db.StringProperty()
     code = db.IntegerProperty()

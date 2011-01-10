@@ -37,10 +37,14 @@ var pm = {
         pm.selectParcel($("#parcels li:first a"));
     },
     showParcelInfoLoader : function() {
+        $("#parcel-events").hide();
+        $("#parcel-form").hide();
         $("#info-loader").show();  
     },
     hideParcelInfoLoader : function() {
         $("#info-loader").hide();  
+        $("#parcel-events").show();
+        $("#parcel-form").show();
     },
     selectParcel : function(parcelLinkElement) {
         pm.showParcelInfoLoader();
@@ -74,6 +78,10 @@ var pm = {
             e.stopPropagation();
             return false;
         });
+
+        $("#parcel-events-list").empty();
+        $("#parcelEventListItemTemplate").tmpl(pm.currentParcel.events).appendTo("#parcel-events-list");
+
     },
     formAsJson : function(formElement) {
         asArray = formElement.serializeArray();
@@ -108,6 +116,21 @@ var pm = {
             javascriptLacksDateFormatter += "0";
         }
         javascriptLacksDateFormatter += d.getDate();
+        return javascriptLacksDateFormatter;
+    },
+    getNiceDateTime : function(timestamp) {
+        d = new Date(timestamp);
+        javascriptLacksDateFormatter = pm.getNiceDate(timestamp);
+        javascriptLacksDateFormatter += " ";
+        if (d.getHours() < 10) {
+            javascriptLacksDateFormatter += "0";
+        }
+        javascriptLacksDateFormatter += d.getHours();
+        javascriptLacksDateFormatter += ":";
+        if (d.getMinutes() < 10) {
+            javascriptLacksDateFormatter += "0";
+        }
+        javascriptLacksDateFormatter += d.getMinutes();
         return javascriptLacksDateFormatter;
     }
     

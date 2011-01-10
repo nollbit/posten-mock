@@ -6,8 +6,8 @@
 		<!--[if lt IE 8]><link rel="stylesheet" href="/static/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->		
 
 		<link rel="stylesheet" href="/static/css/posten.css" type="text/css" media="screen, projection"> 
-		<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-		<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+		<script src="/static/js/jquery/jquery-1.4.4.min.js"></script>
+		<script src="/static/js/jquery/jquery.tmpl.min.js"></script>
 		<script src="/static/js/posten.js"></script>
 	</head>
 	<body>
@@ -16,16 +16,24 @@
 				<h1>Parcels</h1>
 			</div>
 			<div id="parcel-list-container" class="span-6">
+				<h2>Tracking #</h2>
 				<ul id="parcels">
 				</ul>
 			</div>
-			<div id="parcel-info-container" class="span-17 last">
+			<div id="parcel-info-container" class="span-10">
+				<h2>Parcel Info</h2>
 				<div id="parcel-info">
 					<div id="info-loader" class="span-16 last">
 						<img id="info-loader-image" src="/static/images/ajax-loader.gif" width="31" height="31" />
 					</div>
 				</div>
 				<div id="parcel-form">
+				</div>
+			</div>
+			<div id="parcel-events-container" class="span-7 last">
+				<h2>Events</h2>
+				<div id="parcel-events">
+					<ol id="parcel-events-list" />
 				</div>
 			</div>
 		</div>
@@ -58,6 +66,32 @@
 				</li>
 			<ul>
 		</form>
-
 	</script>
+
+	<script id="parcelEventListItemTemplate" type="text/x-jquery-tmpl"> 
+	    <li id="event_${id}">
+			<table>
+				<tr>
+					<td>Time</td>
+					<td>${pm.getNiceDateTime(date)}</td>
+				</tr>
+				<tr>
+					<td>Code</td>
+					<td>${code}</td>	
+				</tr>
+				<tr>
+					<td>Location</td>
+					<td>${location}</td>	
+				</tr>
+				<tr>
+					<td>Error</td>
+					<td>${error}</td>	
+				</tr>
+				<tr>
+					<td colspan="2">${description}</td>	
+				</tr>
+			</table>
+		</li>
+	</script>
+
 </html>

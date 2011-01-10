@@ -3,6 +3,7 @@
 }
 #parcels {
     margin-right: 0;
+    padding: 0;
 }
 
 #parcels li {
@@ -26,15 +27,6 @@
 
 #parcel-info-container {
     padding: 0.5em;
-}
-
-#info-loader {
-    height: 200px;
-    text-align: center;
-}
-#info-loader-image {
-    position: relative;
-    top: 50%;
 }
 
 #parcel-form form ul {

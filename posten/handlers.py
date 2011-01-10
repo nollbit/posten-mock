@@ -43,6 +43,7 @@ class ParcelHandler(webapp.RequestHandler):
             if parcelEventId is None:
                 eq = ParcelEvent.all()
                 eq.ancestor(parcel)
+                eq.order("date")
                 events = eq.fetch(100)
                 event_dicts = [e.to_dict() for e in events]
                 response_dict["events"] = event_dicts
