@@ -10,7 +10,6 @@
     list-style: none;
     padding: 0.3em;
     font-size: 1.3em;
-    background-color: #EEE;
     border-right: 1px solid black;
 
 }
@@ -20,13 +19,15 @@
 }
 
 #parcels li.selected {
-    background-color: white;
+    background-color: #FAFAFA;
     border: 1px solid black;
     border-right: 0;
 }
 
 #parcel-info-container {
+    background-color: #FAFAFA;
     padding: 0.5em;
+    margin-right: 0;
 }
 
 #parcel-form form ul {
@@ -60,6 +61,11 @@
 
 #parcel-form form button {
     margin-left: 140px;
+}
+
+#parcel-events-container {
+    background-color: #FAFAFA;
+    padding: 0.5em;
 }
 
 #parcel-events-list button {
