@@ -36,3 +36,36 @@
     position: relative;
     top: 50%;
 }
+
+#parcel-form form ul {
+    padding: 0.2em;
+}
+
+#parcel-form form ul li {
+    list-style: none;
+}
+
+#parcel-form form label {
+    position: absolute;
+    width: 130px;
+    text-align: right;
+    margin-right: 0.5em;
+    line-height: 35px;
+    vertical-align: middle;
+}
+
+#parcel-form form input {
+    width: 200px;
+    height: 25px;
+    margin-left: 140px;
+}
+
+#parcel-form form span {
+    line-height: 35px;
+    vertical-align: middle;
+    margin-left: 140px;
+}
+
+#parcel-form form button {
+    margin-left: 140px;
+}

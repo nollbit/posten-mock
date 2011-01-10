@@ -25,11 +25,39 @@
 						<img id="info-loader-image" src="/static/images/ajax-loader.gif" width="31" height="31" />
 					</div>
 				</div>
+				<div id="parcel-form">
+				</div>
 			</div>
 		</div>
 	</body>
 	
 	<script id="parcelListItemTemplate" type="text/x-jquery-tmpl"> 
-	    <li><a href="/parcels/${id}" class="tracking-number">${tracking_number}</a></li>
+	    <li><a href="#!/parcels/${id}" class="tracking-number">${tracking_number}</a></li>
+	</script>
+
+	<script id="parcelFormTemplate" type="text/x-jquery-tmpl"> 
+		<form>
+			<ul>
+			{{each fields}}
+				<li>
+					<label for="${$value.name}">${pm.prettifyFieldName($value.name)}</label>
+					{{if $value.type == "display"}}
+						<span id="${$value.name}">${parcel[$value.name]}</span>
+					{{else $value.type == "string"}}
+						<input type="text" id="${$value.name}" name="${$value.name}" value="${parcel[$value.name]}" required="true" />
+					{{else $value.type == "int"}}
+						<input type="number" id="${$value.name}" name="${$value.name}" value="${parcel[$value.name]}" required="true" />
+					{{else $value.type == "date"}}
+						<input type="date" id="${$value.name}" name="${$value.name}" value="${pm.getNiceDate(parcel[$value.name])}" required="true" />
+					{{/if}}
+					<br/>
+				</li>
+			{{/each}}
+				<li>
+					<button id="submit">Update</button>
+				</li>
+			<ul>
+		</form>
+
 	</script>
 </html>
