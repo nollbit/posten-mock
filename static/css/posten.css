@@ -61,3 +61,7 @@
 #parcel-form form button {
     margin-left: 140px;
 }
+
+#parcel-events-list button {
+    display: none;
+}

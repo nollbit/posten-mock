@@ -1,6 +1,7 @@
 # coding=UTF-8
-import datetime
+from datetime import datetime, time, date
 import time
+import logging
 
 from google.appengine.ext import db
 
@@ -15,7 +16,7 @@ class PostenModel(db.Model):
 
             if value is None or isinstance(value, SIMPLE_TYPES):
                 output[key] = value
-            elif isinstance(value, datetime.date):
+            elif isinstance(value, date):
                 # Convert date/datetime to ms-since-epoch ("new Date()").
                 ms = time.mktime(value.utctimetuple()) * 1000
                 ms += getattr(value, 'microseconds', 0) / 1000
@@ -26,6 +27,16 @@ class PostenModel(db.Model):
                 raise ValueError('cannot encode ' + repr(prop))
         output["id"] = model.key().id()
         return output
+
+    def update_from_dict(self, dict_representation):
+        for k, v in dict_representation.iteritems():
+            if hasattr(self, k):
+                fieldType = type(getattr(self, k))
+                if fieldType == long:
+                    v = int(v)
+                if fieldType == datetime:
+                    v = datetime.fromtimestamp(v/1000) # microseconds in javascript
+                setattr(self, k, v)
 
 class Parcel(PostenModel):
     created = db.DateTimeProperty(auto_now_add=True)

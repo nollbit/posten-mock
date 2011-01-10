@@ -36,15 +36,22 @@
 					<ol id="parcel-events-list" />
 				</div>
 			</div>
+			<div class="span-24 last">
+				<div id="error"></div>
+			</div>
 		</div>
 	</body>
+
+	<script id="errorTemplate" type="text/x-jquery-tmpl"> 
+		<span>${options.type} ${options.url} resulted in ${request.statusText} (${request.status})</span>
+	</script>
 	
 	<script id="parcelListItemTemplate" type="text/x-jquery-tmpl"> 
 	    <li><a href="#!/parcels/${id}" class="tracking-number">${tracking_number}</a></li>
 	</script>
 
 	<script id="parcelFormTemplate" type="text/x-jquery-tmpl"> 
-		<form>
+		<form action="#!/parcels/${parcel.id}">
 			<ul>
 			{{each fields}}
 				<li>
@@ -91,6 +98,7 @@
 					<td colspan="2">${description}</td>	
 				</tr>
 			</table>
+			<button class="delete">Delete</button>
 		</li>
 	</script>
 

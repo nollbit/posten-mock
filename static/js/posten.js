@@ -17,6 +17,16 @@ var pm = {
     ],
     currentParcel : null,
     init : function() {
+        $(document).ajaxError(function(e, r, ajaxOptions, thrownError){
+            $("#error").empty();
+            console.log(e);
+            error = {
+                request : r,
+                options : ajaxOptions,
+            }
+            console.log(error);
+            $("#errorTemplate").tmpl(error).appendTo("#error");
+        });
         pm.loadParcels();
     },
     loadParcels : function() {
@@ -73,7 +83,10 @@ var pm = {
         $("#parcelFormTemplate").tmpl(parcelForm).appendTo("#parcel-form");
         
         $("#submit").click(function(e){
-            formObject = pm.formAsJson($("#parcel-form form"));
+            parcelForm = $("#parcel-form form");
+            actionPath = parcelForm.attr("action").slice(2);
+            formObject = pm.formAsObject(parcelForm);
+            pm.updateParcel(actionPath, formObject);
             console.log(formObject);
             e.stopPropagation();
             return false;
@@ -82,8 +95,40 @@ var pm = {
         $("#parcel-events-list").empty();
         $("#parcelEventListItemTemplate").tmpl(pm.currentParcel.events).appendTo("#parcel-events-list");
 
+        $("#parcel-events-list li").hover(function(){
+            $(this).find("button").show(100);
+        },function(){
+            $(this).find("button").hide(100);
+        });
+        
+        $("#parcel-events-list li button").click(function(){
+            parentId = $(this).parent().attr("id");
+            eventId = parentId.split("_")[1]; // haaaaack
+            parcelId = pm.currentParcel.id;
+            console.log(parcelId);
+            console.log(eventId);
+            pm.deleteEvent($(this).parent(), parcelId, eventId);
+        });
+
+
     },
-    formAsJson : function(formElement) {
+    deleteEvent : function(eventElement, parcelId, eventId) {
+        url = "/parcels/" + parcelId + "/" + eventId;
+        console.log(url);
+        $.ajax({url: url, success: function(response){
+            console.log(response);
+            eventElement.hide(200);
+        }, type: "DELETE"});
+    },
+    updateParcel : function(url, formObject) {
+        formJson = JSON.stringify(formObject);
+        console.log(url);
+        console.log(formJson);
+        $.ajax({url: url, data: formJson, success: function(response){
+            console.log(response);
+        }, contentType: "application/json", type: "PUT"});
+    },
+    formAsObject : function(formElement) {
         asArray = formElement.serializeArray();
         formHash = {};
         $.each(asArray, function(i, item){
