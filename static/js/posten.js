@@ -26,8 +26,55 @@ var pm = {
             }
             console.log(error);
             $("#errorTemplate").tmpl(error).appendTo("#error");
+            
+        });
+        // set up "set to now" buttons for date and datetime input fields
+        $(".set-to-now").live("click", function(e){
+            /*
+            parent should be a label pointing to an input field
+            of type "date" or "datetime"
+            */
+            label = $(this).parent();
+            labelFor = label.attr("for");
+            
+            input = $("#" + labelFor);
+            
+            console.log(input.attr("type"));
+            d = new Date();
+            if (input.attr("type") == "date") {
+                input.val(pm.getNiceDate());
+            } else if (input.attr("type") == "datetime") {
+                input.val(pm.getNiceDateTime());
+            }
+            e.stopPropagation();
+            return false;
+        });
+        
+        $("#randomize-tracking-number").click(function(e){
+            e.stopPropagation();
+            randomTrackingNumber = pm.generateRandomTrackingNumber();
+            $("#add-tracking-number").val(randomTrackingNumber);
+            return false;
+        });
+        
+        $("#add-parcel-button").click(function(e){
+            e.stopPropagation();
+            trackingNumber = $("#add-tracking-number").val();
+            if (trackingNumber.length < 10) return false;
+            parcelSkeleton = {
+                "tracking_number": trackingNumber
+            }
+            pm.addParcel(parcelSkeleton);
+            return false;
         });
         pm.loadParcels();
+    },
+    generateRandomTrackingNumber : function() {
+        numberPart = "";
+        for(var i=0; i<10; i++) {
+            numberPart += Math.floor(Math.random() * 10)
+        }
+        return numberPart + "SE";
     },
     loadParcels : function() {
         console.log("loading");
@@ -40,11 +87,11 @@ var pm = {
     updateParcelList : function(){
         $("#parcels").empty();
         $("#parcelListItemTemplate").tmpl(pm.parcels).appendTo("#parcels");
-        $("#parcels li:first").addClass("selected");
+        $("#parcels li:last").addClass("selected");
         $("#parcels a.tracking-number").click(function(e){
             pm.selectParcel($(this));
         });
-        pm.selectParcel($("#parcels li:first a"));
+        pm.selectParcel($("#parcels li:last a"));
     },
     showParcelInfoLoader : function() {
         $("#parcel-events").hide();
@@ -86,12 +133,20 @@ var pm = {
             $("#parcel-form").empty();
             $("#parcelFormTemplate").tmpl(parcelForm).appendTo("#parcel-form");
 
-            $("#submit").click(function(e){
+            $("#parcel-form button").click(function(e){
                 parcelForm = $("#parcel-form form");
                 actionPath = parcelForm.attr("action").slice(2);
                 formObject = pm.formAsObject(parcelForm);
-                pm.updateParcel(actionPath, formObject);
+                action = $(this).attr("id");
+                
                 console.log(formObject);
+
+                if (action == "update") {
+                    pm.updateParcel(actionPath, formObject);
+                } else if (action == "delete") {
+                    pm.deleteParcel(actionPath);
+                }
+                
                 e.stopPropagation();
                 return false;
             });
@@ -144,6 +199,13 @@ var pm = {
             eventElement.hide(200);
         }, type: "DELETE"});
     },
+    addParcel : function(formObject) {
+        formJson = JSON.stringify(formObject);
+        console.log(formJson);
+        $.ajax({url: "/parcels", data: formJson, success: function(response){
+            pm.loadParcels();
+        }, contentType: "application/json", type: "POST"});
+    },
     updateParcel : function(url, formObject) {
         formJson = JSON.stringify(formObject);
         console.log(url);
@@ -151,6 +213,13 @@ var pm = {
         $.ajax({url: url, data: formJson, success: function(response){
             console.log(response);
         }, contentType: "application/json", type: "PUT"});
+    },
+    deleteParcel : function(url) {
+        formJson = JSON.stringify(formObject);
+        console.log(url);
+        $.ajax({url: url, success: function(response){
+            pm.loadParcels();
+        }, type: "DELETE"});
     },
     formAsObject : function(formElement) {
         asArray = formElement.serializeArray();
@@ -170,6 +239,11 @@ var pm = {
                     value = temp_date.getTime();
                 }
             }
+            
+            if (item.name == "error" && value == "on") {
+                // hack for fixing the error flag
+                value = true;
+            }
             formHash[item.name] = value;
         });
         console.log(formHash);
@@ -180,14 +254,19 @@ var pm = {
         return prettyFieldName;
     },
     getNiceDate : function(timestamp) {
-        d = new Date(timestamp);
+        d = new Date()
+        if (timestamp != undefined) {
+            d = new Date(timestamp);
+        }
+        
         javascriptLacksDateFormatter = "";
         javascriptLacksDateFormatter += d.getFullYear();
         javascriptLacksDateFormatter += "-";
-        if (d.getMonth() < 10) {
+        month = d.getMonth() + 1; // !"€(!"%/!/"%(!"%)!"(%!)))"!!!!!!!!!!
+        if (month < 10) {
             javascriptLacksDateFormatter += "0";
         }
-        javascriptLacksDateFormatter += d.getMonth();
+        javascriptLacksDateFormatter += month;
         javascriptLacksDateFormatter += "-";
         if (d.getDate() < 10) {
             javascriptLacksDateFormatter += "0";
@@ -196,7 +275,11 @@ var pm = {
         return javascriptLacksDateFormatter;
     },
     getNiceDateTime : function(timestamp) {
-        d = new Date(timestamp);
+        d = new Date()
+        if (timestamp != undefined) {
+            d = new Date(timestamp);
+        }
+
         javascriptLacksDateFormatter = pm.getNiceDate(timestamp);
         javascriptLacksDateFormatter += " ";
         if (d.getHours() < 10) {

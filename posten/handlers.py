@@ -42,11 +42,15 @@ class ParcelHandler(webapp.RequestHandler):
             self.write_error(400, 1000, "Invalid body (should be json parcel)")
             return
 
-        if parcel_id is None:
-            return self.not_found()
-        
         if parcel_id is None: #create parcel
-            pass
+            # assumption that tracking_number key exists...
+            tracking_number = data["tracking_number"]
+            
+            parcel = Parcel(tracking_number=tracking_number)
+            parcel.update_from_dict(data)
+            parcel.put()
+            url = "/parcels/%s" % (parcel.key().id())
+            return self.created(url)
         else:
             parcel = Parcel.get_by_id(int(parcel_id))
 

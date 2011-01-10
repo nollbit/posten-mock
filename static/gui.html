@@ -19,6 +19,13 @@
 				<h2>Tracking #</h2>
 				<ul id="parcels">
 				</ul>
+				<hr/>
+				<h3>Add Parcel</h3>
+				<form id="add-parcel">
+					<label for="add-tracking-number">Tracking number (<a href="#" id="randomize-tracking-number">randomize</a>)</label>
+					<input type="text" name="add-tracking-number" id="add-tracking-number">
+					<button id="add-parcel-button">Add</button>
+				</form>
 			</div>
 			<div id="parcel-info-container" class="span-10">
 				<h2>Parcel Info</h2>
@@ -37,13 +44,14 @@
 					<hr/>
 					<h3>Add Event</h3>
 					<form id="event-form">
-						<label for="date">Date</label><br/>
+						<label for="date">Date  (<a class="set-to-now" href="#">Set to now</a>)</label><br/>
 						<input type="datetime" name="date" id="date" required="true" placeholder="Date"><br/>
 						<label for="code">Code</label><br/>
 						<input type="number" name="code" id="code" required="true" placeholder="Code"><br/>
 						<label for="location">Location</label><br/>
 						<input type="text" name="location" id="location" required="true" placeholder="Location"><br/>
-						Is error <input type="checkbox" name="error"><br/>
+						<label for="error">Is error event</label><br/>
+						<input type="checkbox" name="error"><br/>
 						<label for="description">Description</label><br/>
 						<input type="text" name="description" id="description" required="true" placeholder="Description"><br/>
 						<button id="add-event" onclick="return false;">Add</button>
@@ -69,21 +77,28 @@
 			<ul>
 			{{each fields}}
 				<li>
-					<label for="${$value.name}">${pm.prettifyFieldName($value.name)}</label>
+					{{if $value.type != "date"}}
+						<label for="${$value.name}">${pm.prettifyFieldName($value.name)}</label>
+					{{/if}}
 					{{if $value.type == "display"}}
 						<span id="${$value.name}">${parcel[$value.name]}</span>
 					{{else $value.type == "string"}}
-						<input type="text" id="${$value.name}" name="${$value.name}" value="${parcel[$value.name]}" required="true" />
+						<input type="text" id="${$value.name}" name="${$value.name}" value="${parcel[$value.name]}" required="true" {{if $value.name == "tracking_number"}}disabled="disabled"{{/if}} />
 					{{else $value.type == "int"}}
 						<input type="number" id="${$value.name}" name="${$value.name}" value="${parcel[$value.name]}" required="true" />
 					{{else $value.type == "date"}}
+						<label for="${$value.name}">
+							${pm.prettifyFieldName($value.name)}
+							(<a class="set-to-now" href="#">now</a>)
+						</label>
 						<input type="date" id="${$value.name}" name="${$value.name}" value="${pm.getNiceDate(parcel[$value.name])}" required="true" />
 					{{/if}}
 					<br/>
 				</li>
 			{{/each}}
 				<li>
-					<button id="submit">Update</button>
+					<button id="add">Update</button>
+					<button id="delete">Delete</button>
 				</li>
 			<ul>
 		</form>

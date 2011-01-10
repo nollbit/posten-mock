@@ -47,6 +47,10 @@
     vertical-align: middle;
 }
 
+#parcel-form form label a.set-to-now {
+    font-size: 0.5em;
+}
+
 #parcel-form form input {
     width: 200px;
     height: 25px;

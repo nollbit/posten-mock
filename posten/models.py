@@ -48,22 +48,22 @@ class Parcel(PostenModel):
 
     tracking_number = db.StringProperty(required=True)
 
-    customer_name = db.StringProperty()
-    customer_id = db.StringProperty()
+    customer_name = db.StringProperty(default="Svenska Banken")
+    customer_id = db.StringProperty(default="1111000001")
 
-    status_code = db.IntegerProperty()
-    status_description = db.StringProperty()
+    status_code = db.IntegerProperty(default=7L)
+    status_description = db.StringProperty(default="-")
 
-    service_name = db.StringProperty()
-    service_code = db.IntegerProperty()
+    service_name = db.StringProperty(default="Hempaket 19.00")
+    service_code = db.IntegerProperty(default=100L)
     
-    receiver_zip = db.StringProperty()
-    receiver_city = db.StringProperty()
+    receiver_zip = db.StringProperty(default="11111")
+    receiver_city = db.StringProperty(default="STOCKHOLM")
 
-    date_sent = db.DateTimeProperty()
-    date_delivered = db.DateTimeProperty()
+    date_sent = db.DateTimeProperty(default=datetime.utcnow())
+    date_delivered = db.DateTimeProperty(default=datetime.utcnow())
     
-    actual_weight = db.StringProperty()
+    actual_weight = db.StringProperty(default="2.7")
 
 class ParcelEvent(PostenModel):
     error = db.BooleanProperty(default=False)
