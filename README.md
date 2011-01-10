@@ -10,6 +10,8 @@ This is a (very incomplete) attempt at creating a mock of that service.
 With the web interface, you'll be able to simulate
 the package tracking API.
 
+Please note that this application barely works, but if your willing to risk it, go ahead!
+
 How?
 ====
 
