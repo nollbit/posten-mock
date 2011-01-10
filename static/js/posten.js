@@ -65,34 +65,40 @@ var pm = {
         console.log(parcelPath);
         pm.loadParcelData(parcelPath);
     },
-    loadParcelData : function(parcelPath) {
+    loadParcelData : function(parcelPath, eventsOnly) {
+        if (eventsOnly == undefined) {
+            eventsOnly = false
+        }
         $.getJSON(parcelPath, function(response){
             console.log(response);
             pm.currentParcel = response;
-            pm.parcelDataUpdated();
+            pm.parcelDataUpdated(eventsOnly);
         });
     },
-    parcelDataUpdated : function() {
+    parcelDataUpdated : function(eventsOnly) {
         pm.hideParcelInfoLoader();
         parcelForm = {
             fields: pm.parcelFormFields,
             parcel: pm.currentParcel,
         }
 
-        $("#parcel-form").empty();
-        $("#parcelFormTemplate").tmpl(parcelForm).appendTo("#parcel-form");
-        
-        $("#submit").click(function(e){
-            parcelForm = $("#parcel-form form");
-            actionPath = parcelForm.attr("action").slice(2);
-            formObject = pm.formAsObject(parcelForm);
-            pm.updateParcel(actionPath, formObject);
-            console.log(formObject);
-            e.stopPropagation();
-            return false;
-        });
+        if (!eventsOnly) {
+            $("#parcel-form").empty();
+            $("#parcelFormTemplate").tmpl(parcelForm).appendTo("#parcel-form");
+
+            $("#submit").click(function(e){
+                parcelForm = $("#parcel-form form");
+                actionPath = parcelForm.attr("action").slice(2);
+                formObject = pm.formAsObject(parcelForm);
+                pm.updateParcel(actionPath, formObject);
+                console.log(formObject);
+                e.stopPropagation();
+                return false;
+            });
+        }
 
         $("#parcel-events-list").empty();
+        
         $("#parcelEventListItemTemplate").tmpl(pm.currentParcel.events).appendTo("#parcel-events-list");
 
         $("#parcel-events-list li").hover(function(){
@@ -109,8 +115,26 @@ var pm = {
             console.log(eventId);
             pm.deleteEvent($(this).parent(), parcelId, eventId);
         });
+        
+        $("#event-form button").click(function(e){
+            eventForm = $("#event-form");
+            parcelId = pm.currentParcel.id;
+            formObject = pm.formAsObject(eventForm);
+            pm.addEvent(parcelId, formObject);
+            e.stopPropagation();
+            return false;
+        });
 
 
+    },
+    addEvent : function(parcelId, formObject) {
+        console.log(parcelId);
+        console.log(formObject);
+        parcelPath = "/parcels/" + parcelId;
+        formJson = JSON.stringify(formObject);
+        $.post(parcelPath, formJson, function(){
+            pm.loadParcelData(parcelPath, true);
+        });
     },
     deleteEvent : function(eventElement, parcelId, eventId) {
         url = "/parcels/" + parcelId + "/" + eventId;
@@ -134,9 +158,17 @@ var pm = {
         $.each(asArray, function(i, item){
             value = item.value;
             if (item.name.indexOf("date") >= 0) {
-                dateArray = value.split("-");
-                temp_date = new Date(dateArray[0], dateArray[1], dateArray[2]);
-                value = temp_date.getTime();
+                if (value.length == 10) {
+                    dateArray = value.split("-");
+                    temp_date = new Date(dateArray[0], dateArray[1], dateArray[2]);
+                    value = temp_date.getTime();
+                } else {
+                    dateTimeParts = value.split(" ");
+                    dateArray = dateTimeParts[0].split("-")
+                    timeArray = dateTimeParts[1].split(":")
+                    temp_date = new Date(dateArray[0], dateArray[1], dateArray[2], timeArray[0], timeArray[1], timeArray[2]);
+                    value = temp_date.getTime();
+                }
             }
             formHash[item.name] = value;
         });

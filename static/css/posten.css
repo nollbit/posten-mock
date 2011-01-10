@@ -65,3 +65,7 @@
 #parcel-events-list button {
     display: none;
 }
+
+#event-form input {
+    width: 100%;
+}

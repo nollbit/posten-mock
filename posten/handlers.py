@@ -25,11 +25,41 @@ class ParcelHandler(webapp.RequestHandler):
             self.response.headers["Content-Type"] =  "text/plain; charset=UTF-8"
             self.response.out.write(message)
 
+    def created(self, url):
+        self.response.set_status(404)
+        self.redirect(url)
+
     def not_found(self):
         self.response.set_status(404)
 
     def no_content(self):
         self.response.set_status(204)
+
+    def post(self, parcel_id, parcel_event_id):
+        try:
+            data = json.load(self.request.body_file)
+        except Exception, e:
+            self.write_error(400, 1000, "Invalid body (should be json parcel)")
+            return
+
+        if parcel_id is None:
+            return self.not_found()
+        
+        if parcel_id is None: #create parcel
+            pass
+        else:
+            parcel = Parcel.get_by_id(int(parcel_id))
+
+        if parcel is None:
+            return self.not_found()
+        
+        if parcel_id is not None: # create event
+            pe = ParcelEvent(parent=parcel)
+            pe.update_from_dict(data)
+            pe.put()
+            url = "/parcels/%s/%s" % (parcel_id, pe.key().id())
+            return self.created(url)
+            
         
     def get(self, parcel_id, parcel_event_id):
         response_dict = None
@@ -81,7 +111,7 @@ class ParcelHandler(webapp.RequestHandler):
             parcel.update_from_dict(data)
             parcel.put()
         else:
-            #no update support for parcel events
+            #no update support for parcel events yet
             pass
         
         return self.no_content()

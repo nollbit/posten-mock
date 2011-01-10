@@ -31,11 +31,15 @@ class PostenModel(db.Model):
     def update_from_dict(self, dict_representation):
         for k, v in dict_representation.iteritems():
             if hasattr(self, k):
-                fieldType = type(getattr(self, k))
-                if fieldType == long:
+                logging.info("%s = %s" % (k,v))
+                field_type = type(getattr(self, k))
+                logging.info(field_type)
+                if field_type == long:
                     v = int(v)
-                if fieldType == datetime:
+                if field_type == datetime:
+                    logging.info(v)
                     v = datetime.fromtimestamp(v/1000) # microseconds in javascript
+                    logging.info(v)
                 setattr(self, k, v)
 
 class Parcel(PostenModel):
@@ -63,8 +67,8 @@ class Parcel(PostenModel):
 
 class ParcelEvent(PostenModel):
     error = db.BooleanProperty(default=False)
-    date = db.DateTimeProperty()
-    location = db.StringProperty()
-    code = db.IntegerProperty()
-    description = db.StringProperty()
+    date = db.DateTimeProperty(default=datetime.utcnow())
+    location = db.StringProperty(default="")
+    code = db.IntegerProperty(default=1L)
+    description = db.StringProperty(default="")
     

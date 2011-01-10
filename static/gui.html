@@ -33,7 +33,21 @@
 			<div id="parcel-events-container" class="span-7 last">
 				<h2>Events</h2>
 				<div id="parcel-events">
-					<ol id="parcel-events-list" />
+					<ol id="parcel-events-list" ></ol>
+					<hr/>
+					<h3>Add Event</h3>
+					<form id="event-form">
+						<label for="date">Date</label><br/>
+						<input type="datetime" name="date" id="date" required="true" placeholder="Date"><br/>
+						<label for="code">Code</label><br/>
+						<input type="number" name="code" id="code" required="true" placeholder="Code"><br/>
+						<label for="location">Location</label><br/>
+						<input type="text" name="location" id="location" required="true" placeholder="Location"><br/>
+						Is error <input type="checkbox" name="error"><br/>
+						<label for="description">Description</label><br/>
+						<input type="text" name="description" id="description" required="true" placeholder="Description"><br/>
+						<button id="add-event" onclick="return false;">Add</button>
+					</form>
 				</div>
 			</div>
 			<div class="span-24 last">
