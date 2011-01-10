@@ -1,12 +1,38 @@
-#container {
-    padding: 10px;
+#parcel-list-container {
+    margin-right: 0;
 }
-
 #parcels {
-    
+    margin-right: 0;
 }
 
-.parcel-container {
-    margin: 5px;
-    border: 1px solid gray;
+#parcels li {
+    list-style: none;
+    padding: 0.3em;
+    font-size: 1.3em;
+    background-color: #EEE;
+    border-right: 1px solid black;
+
+}
+
+#parcels li a {
+    text-decoration: none;
+}
+
+#parcels li.selected {
+    background-color: white;
+    border: 1px solid black;
+    border-right: 0;
+}
+
+#parcel-info-container {
+    padding: 0.5em;
+}
+
+#info-loader {
+    height: 200px;
+    text-align: center;
+}
+#info-loader-image {
+    position: relative;
+    top: 50%;
 }

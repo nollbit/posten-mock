@@ -14,6 +14,7 @@ var pm = {
     updateParcelList : function(){
         $("#parcels").empty();
         $("#parcelListItemTemplate").tmpl(pm.parcels).appendTo("#parcels");
+        $("#parcels li:first").addClass("selected");
         $("#parcels a.tracking-number").click(function(){
             console.log($(this));
             return false;

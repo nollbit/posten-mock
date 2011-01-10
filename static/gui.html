@@ -11,9 +11,20 @@
 		<script src="/static/js/posten.js"></script>
 	</head>
 	<body>
-		<div id="container">
-			<h1>Parcels</h1>
-			<ul id="parcels">
+		<div class="container">
+			<div class="span-24 last">
+				<h1>Parcels</h1>
+			</div>
+			<div id="parcel-list-container" class="span-6">
+				<ul id="parcels">
+				</ul>
+			</div>
+			<div id="parcel-info-container" class="span-17 last">
+				<div id="parcel-info">
+					<div id="info-loader" class="span-16 last">
+						<img id="info-loader-image" src="/static/images/ajax-loader.gif" width="31" height="31" />
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
