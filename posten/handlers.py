@@ -6,12 +6,35 @@ from django.utils import simplejson as json
 from google.appengine.ext import webapp
 from django.utils import simplejson as json
 
-from posten.helpers import FixtureHelper
+from posten.helpers import FixtureHelper, ParcelHelper
 from posten.models import Parcel, ParcelEvent
 
 class TrackingHandler(webapp.RequestHandler):
+
     def get(self):
-        pass
+        tracking_number = self.request.get("kolliid")
+        
+        
+        if len(tracking_number) < 9:
+            xml = ParcelHelper().tracking_number_error_as_xml()
+        else:
+            parcel_query = Parcel.all()
+            parcel_query.filter("tracking_number =", tracking_number)
+            parcel = parcel_query.get()
+            
+            if parcel is None:
+                xml = ParcelHelper().no_parcel_as_xml(tracking_number)
+            else:
+                events_query = ParcelEvent.all()
+                logging.info( parcel )
+                events_query.ancestor(parcel.key())
+                events = events_query.fetch(100)
+                
+                xml = ParcelHelper().parcel_as_xml(tracking_number, parcel, events)
+        
+        self.response.headers["Content-Type"] =  "text/xml; charset=ISO-8859-1"
+        self.response.out.write(xml)
+        
 
 class GuiHandler(webapp.RequestHandler):
     def get(self):
@@ -26,14 +49,14 @@ class ParcelHandler(webapp.RequestHandler):
             self.response.out.write(message)
 
     def created(self, url):
-        self.response.set_status(404)
+        self.response.set_status(201)
         self.redirect(url)
-
-    def not_found(self):
-        self.response.set_status(404)
 
     def no_content(self):
         self.response.set_status(204)
+
+    def not_found(self):
+        self.response.set_status(404)
 
     def post(self, parcel_id, parcel_event_id):
         try:
@@ -143,5 +166,7 @@ class ParcelHandler(webapp.RequestHandler):
 class FixtureHandler(webapp.RequestHandler):
     def get(self):
         # just add a single parcel with events
+        # if the parcel looks familiar, it's because
+        # I copied it directly from Postens documentation - verbatim. 
         FixtureHelper().load()
         self.response.out.write("done")
