@@ -8,6 +8,9 @@ from google.appengine.ext import db
 SIMPLE_TYPES = (int, long, float, bool, dict, basestring, list)
 
 class PostenModel(db.Model):
+    # this method stolen from 
+    # http://stackoverflow.com/questions/1531501/json-serialization-of-google-app-engine-models
+    # thank you, David Wilson
     def to_dict(self):
         model = self
         output = {}
